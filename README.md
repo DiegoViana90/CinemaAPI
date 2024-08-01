@@ -34,7 +34,7 @@ Este é um projeto de API RESTful para gerenciar filmes em salas de cinema, dese
 ```bash
 git clone https://github.com/DiegoViana90/CinemaAPI.git
 cd CinemaApi
-````
+```
 ### Passo 2: Configurar o Banco de Dados
 Certifique-se de que o MySQL esteja instalado e em execução.
 Atualize a string de conexão no arquivo appsettings.json com suas credenciais do MySQL:
@@ -42,3 +42,9 @@ Atualize a string de conexão no arquivo appsettings.json com suas credenciais d
   "ConnectionStrings": {
     "DefaultConnection": "Server=localhost;Database=CinemaDb;User=root;Password=yourpassword;"
   },
+```
+
+### Passo 3: Restaurar Dependências
+```bash
+dotnet restore
+```
