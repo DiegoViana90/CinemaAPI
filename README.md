@@ -9,6 +9,8 @@ A API deve ser possível gerenciar os filmes que passam em uma determinando sala
 - Filme (Nome, diretor, duração)
 - Uma sala pode ter vários filmes
 - um filme pode existir sem uma sala
+
+
 Criação de testes unitários (Controller e camada de serviço)
 Utilização do banco mysql
 Configuração do swagger
