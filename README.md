@@ -70,3 +70,7 @@ Atualize a string de conexão no arquivo appsettings.json com suas credenciais d
 ```bash
 dotnet restore
 ```
+### Passo 4: Executar as Migrações do Entity Framework
+```bash
+dotnet ef database update
+```
