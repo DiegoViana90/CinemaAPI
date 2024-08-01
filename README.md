@@ -4,7 +4,7 @@ Este é um projeto de API RESTful para gerenciar filmes em salas de cinema, dese
 
 ## Estrutura do Projeto
 
-- **Entities**: Contém as classes das entidades `Room` e `Movie`.
+- **Models**: Contém as classes das entidades `Room` e `Movie`.
 - **DTOs**: Contém os objetos de transferência de dados (Data Transfer Objects).
 - **Repositories**: Contém a lógica de acesso ao banco de dados.
 - **Services**: Contém a lógica de negócios.
