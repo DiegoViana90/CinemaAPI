@@ -1,3 +1,4 @@
+
 namespace CinemaApi.DTOs.Request
 {
     public class InsertMovieRequest
