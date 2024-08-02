@@ -23,3 +23,7 @@ staticwebassets.pack.sentinel
 *.nupkg
 packages/
 obj/project.nuget.cache
+obj/CinemaApi.csproj.nuget.dgspec.json
+obj/project.nuget.cache
+obj/CinemaApi.csproj.nuget.dgspec.json
+obj/project.nuget.cache
