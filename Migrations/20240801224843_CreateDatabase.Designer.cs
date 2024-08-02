@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CinemaApi.Migrations
 {
     [DbContext(typeof(CinemaContext))]
-    [Migration("20240801205039_CreateDatabase")]
+    [Migration("20240801224843_CreateDatabase")]
     partial class CreateDatabase
     {
         /// <inheritdoc />
@@ -24,7 +24,7 @@ namespace CinemaApi.Migrations
 
             modelBuilder.Entity("CinemaAPI.Models.Movie", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("MovieId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
@@ -39,19 +39,19 @@ namespace CinemaApi.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("RoomNumber")
+                    b.Property<int?>("RoomId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("MovieId");
 
-                    b.HasIndex("RoomNumber");
+                    b.HasIndex("RoomId");
 
-                    b.ToTable("Movie");
+                    b.ToTable("Movies");
                 });
 
             modelBuilder.Entity("CinemaAPI.Models.Room", b =>
                 {
-                    b.Property<int>("RoomNumber")
+                    b.Property<int>("RoomId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
@@ -59,16 +59,23 @@ namespace CinemaApi.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("RoomNumber");
+                    b.Property<string>("RoomNumber")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
 
-                    b.ToTable("Room");
+                    b.HasKey("RoomId");
+
+                    b.HasIndex("RoomNumber")
+                        .IsUnique();
+
+                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("CinemaAPI.Models.Movie", b =>
                 {
                     b.HasOne("CinemaAPI.Models.Room", "Room")
                         .WithMany("Movies")
-                        .HasForeignKey("RoomNumber");
+                        .HasForeignKey("RoomId");
 
                     b.Navigation("Room");
                 });

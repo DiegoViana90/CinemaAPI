@@ -1,4 +1,8 @@
+using CinemaApi.Business.Interface;
+using CinemaApi.Business.Services;
 using CinemaApi.Data;
+using CinemaApi.Repositories;
+using CinemaApi.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -16,6 +20,9 @@ builder.Services.AddDbContext<CinemaContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(new Version(8, 0, 25)),
         mysqlOptions => mysqlOptions.EnableRetryOnFailure()
     ));
+   
+builder.Services.AddScoped<IMovieService, MovieService>();
+builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 
 var app = builder.Build();
 
