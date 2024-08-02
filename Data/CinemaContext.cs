@@ -7,18 +7,29 @@ namespace CinemaApi.Data
     {
         public CinemaContext(DbContextOptions<CinemaContext> options) : base(options) { }
 
-        public DbSet<Room> Room { get; set; }
-        public DbSet<Movie> Movie { get; set; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<Movie> Movies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Room>()
-                .HasKey(r => r.RoomNumber);
+                .HasKey(r => r.RoomId);
+
+            modelBuilder.Entity<Room>()
+                .HasIndex(r => r.RoomNumber)
+                .IsUnique();
 
             modelBuilder.Entity<Room>()
                 .HasMany(r => r.Movies)
                 .WithOne(m => m.Room)
-                .HasForeignKey(m => m.RoomNumber);
+                .HasForeignKey(m => m.RoomId);
+
+            modelBuilder.Entity<Movie>()
+                .HasKey(m => m.MovieId);
+
+            modelBuilder.Entity<Movie>()
+                .Property(m => m.MovieId)
+                .ValueGeneratedOnAdd();
         }
     }
 }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\dev\\CinemaApi\\CinemaApi.csproj": {}
+    "c:\\dev\\CinemaApi\\CinemaApi.csproj": {}
   },
   "projects": {
-    "C:\\dev\\CinemaApi\\CinemaApi.csproj": {
+    "c:\\dev\\CinemaApi\\CinemaApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\dev\\CinemaApi\\CinemaApi.csproj",
+        "projectUniqueName": "c:\\dev\\CinemaApi\\CinemaApi.csproj",
         "projectName": "CinemaApi",
-        "projectPath": "C:\\dev\\CinemaApi\\CinemaApi.csproj",
+        "projectPath": "c:\\dev\\CinemaApi\\CinemaApi.csproj",
         "packagesPath": "C:\\Users\\Diego\\.nuget\\packages\\",
-        "outputPath": "C:\\dev\\CinemaApi\\obj\\",
+        "outputPath": "c:\\dev\\CinemaApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Diego\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -45,6 +45,10 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
             "Microsoft.AspNetCore.Mvc.Testing": {
               "target": "Package",
               "version": "[7.0.0, )"
@@ -80,6 +84,14 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.7.0, )"
+            },
+            "Swashbuckle.AspNetCore.Annotations": {
+              "target": "Package",
+              "version": "[6.6.1, )"
+            },
+            "Swashbuckle.AspNetCore.Filters": {
+              "target": "Package",
+              "version": "[8.0.2, )"
             }
           },
           "imports": [
