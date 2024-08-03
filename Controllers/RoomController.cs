@@ -30,10 +30,7 @@ namespace CinemaApi.Controllers
                 await _roomService.InsertNewRoom(insertRoomRequest);
                 return Ok("Sala criada com sucesso.");
             }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
