@@ -1,8 +1,9 @@
 using CinemaApi.Business.Interface;
-using CinemaApi.DTOs;
 using CinemaApi.DTOs.Request;
+using CinemaApi.Validators;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using System;
 
 namespace CinemaApi.Controllers
 {
@@ -18,8 +19,7 @@ namespace CinemaApi.Controllers
         }
 
         [HttpPost("InsertNewMovie")]
-        [SwaggerOperation(Summary = "Adiciona um novo filme",
-            Description = "Adiciona um novo filme ao sistema")]
+        [SwaggerOperation(Summary = "Adiciona um novo filme", Description = "Adiciona um novo filme ao sistema")]
         [SwaggerResponse(200, "Filme Criado com sucesso", typeof(string))]
         [SwaggerResponse(201, "Filme Criado com sucesso", typeof(string))]
         [SwaggerResponse(400, "Solicitação inválida")]
@@ -32,11 +32,11 @@ namespace CinemaApi.Controllers
                 await _movieService.InsertNewMovie(insertMovieRequest);
                 return Ok("Filme Inserido com sucesso.");
             }
+
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
-
     }
 }

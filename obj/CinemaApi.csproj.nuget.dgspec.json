@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\dev\\CinemaApi\\CinemaApi.csproj": {}
+    "C:\\dev\\CinemaApi\\CinemaApi.csproj": {}
   },
   "projects": {
-    "c:\\dev\\CinemaApi\\CinemaApi.csproj": {
+    "C:\\dev\\CinemaApi\\CinemaApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\dev\\CinemaApi\\CinemaApi.csproj",
+        "projectUniqueName": "C:\\dev\\CinemaApi\\CinemaApi.csproj",
         "projectName": "CinemaApi",
-        "projectPath": "c:\\dev\\CinemaApi\\CinemaApi.csproj",
+        "projectPath": "C:\\dev\\CinemaApi\\CinemaApi.csproj",
         "packagesPath": "C:\\Users\\Diego\\.nuget\\packages\\",
-        "outputPath": "c:\\dev\\CinemaApi\\obj\\",
+        "outputPath": "C:\\dev\\CinemaApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Diego\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -77,6 +77,18 @@
               "target": "Package",
               "version": "[7.0.0, )"
             },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.9.0, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.70, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
               "version": "[7.0.0, )"
@@ -92,6 +104,16 @@
             "Swashbuckle.AspNetCore.Filters": {
               "target": "Package",
               "version": "[8.0.2, )"
+            },
+            "xUnit": {
+              "target": "Package",
+              "version": "[2.4.1, )"
+            },
+            "xunit.runner.visualstudio": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.4.3, )"
             }
           },
           "imports": [
