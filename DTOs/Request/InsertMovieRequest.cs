@@ -6,6 +6,6 @@ namespace CinemaApi.DTOs.Request
         public string Name { get; set; }
         public string Director { get; set; }
         public TimeSpan Duration { get; set; }
-        public int? RoomNumber { get; set; } 
+        public string? RoomNumber { get; set; } 
     }
 }

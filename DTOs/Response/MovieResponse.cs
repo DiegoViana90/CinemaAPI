@@ -5,6 +5,7 @@ namespace CinemaApi.DTOs.Response
         public string Name { get; set; }
         public string Director { get; set; }
         public TimeSpan Duration { get; set; }
-        public int? RoomNumber { get; set; }
+        public string? RoomNumber { get; set; }
+        public string? Description { get; set; } 
     }
 }

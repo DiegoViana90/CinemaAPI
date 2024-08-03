@@ -21,16 +21,18 @@ namespace CinemaApi.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> RoomExists(int roomId)
+        public async Task<bool> RoomExistsByNumber(string roomNumber)
         {
-            bool roomExists = await _context.Rooms.AnyAsync(r => r.RoomId == roomId);
+            bool roomExists = await _context.Rooms.AnyAsync(r => r.RoomNumber == roomNumber);
             return roomExists;
         }
 
-        public async Task<bool> RoomExistsByNumber(string roomNumber)
+        public async Task<Room> GetRoomByNumber(string roomNumber)
         {
-            bool roomExists =  await _context.Rooms.AnyAsync(r => r.RoomNumber == roomNumber);
-            return roomExists;
+            Room room = await _context.Rooms
+                       .Include(r => r.Movies)
+                       .FirstOrDefaultAsync(r => r.RoomNumber == roomNumber);
+            return room;
         }
     }
 }

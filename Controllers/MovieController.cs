@@ -63,5 +63,47 @@ namespace CinemaApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut("UpdateMovieRoom")]
+        [SwaggerOperation(Summary = "Atualiza o número da sala de um filme",
+        Description = "Atualiza o número da sala de um filme existente no sistema.")]
+        [SwaggerResponse(200, "Número da sala atualizado com sucesso", typeof(MovieResponse))]
+        [SwaggerResponse(404, "Filme não encontrado")]
+        [SwaggerResponse(400, "Solicitação inválida")]
+        [SwaggerResponse(500, "Erro interno do servidor")]
+        public async Task<ActionResult<MovieResponse>> UpdateMovie([FromBody] UpdateMovieRoomRequest updateMovieRoomRequest)
+        {
+            try
+            {
+                var movieResponse = await _movieService.UpdateMovie(updateMovieRoomRequest);
+                return Ok(movieResponse);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("GetAllMovies")]
+        [SwaggerOperation(Summary = "Obtém todos os filmes", 
+        Description = "Obtém a lista de todos os filmes")]
+        [SwaggerResponse(200, "Lista de filmes obtida com sucesso", typeof(IEnumerable<MovieResponse>))]
+        [SwaggerResponse(500, "Erro interno do servidor")]
+        public async Task<ActionResult<IEnumerable<MovieResponse>>> GetAllMovies()
+        {
+            try
+            {
+                var movies = await _movieService.GetAllMovies();
+                return Ok(movies);
+            }
+
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

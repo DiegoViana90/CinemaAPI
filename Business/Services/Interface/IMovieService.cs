@@ -1,7 +1,5 @@
 using CinemaApi.DTOs.Request;
 using CinemaApi.DTOs.Response;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace CinemaApi.Business.Interface
 {
@@ -9,5 +7,7 @@ namespace CinemaApi.Business.Interface
     {
         Task InsertNewMovie(InsertMovieRequest insertMovieRequest);
         Task<MovieResponse> GetMovieByName(string name);
+        Task<MovieResponse> UpdateMovie(UpdateMovieRoomRequest updateMovieRoomRequest);
+        Task<IEnumerable<MovieResponse>> GetAllMovies(); 
     }
 }

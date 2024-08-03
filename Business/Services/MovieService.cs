@@ -1,10 +1,9 @@
 using CinemaApi.Business.Interface;
 using CinemaApi.DTOs.Request;
-using CinemaApi.Repositories.Interface;
-using CinemaAPI.Models;
-using CinemaApi.Validators;
-using System.Threading.Tasks;
 using CinemaApi.DTOs.Response;
+using CinemaApi.Repositories.Interface;
+using CinemaApi.Validators;
+using CinemaAPI.Models;
 
 namespace CinemaApi.Business.Services
 {
@@ -23,34 +22,66 @@ namespace CinemaApi.Business.Services
         {
             await Validator.ValidateInsertMovieRequestAsync(insertMovieRequest, _roomRepository, _movieRepository);
 
+            Room room = null;
+            if (!string.IsNullOrEmpty(insertMovieRequest.RoomNumber))
+            {
+                room = await _roomRepository.GetRoomByNumber(insertMovieRequest.RoomNumber);
+            }
+
             Movie movie = new Movie
             {
                 Name = insertMovieRequest.Name,
                 Director = insertMovieRequest.Director,
                 Duration = insertMovieRequest.Duration,
-                RoomId = insertMovieRequest.RoomNumber,
+                RoomId = room?.RoomId,
             };
 
             await _movieRepository.InsertNewMovie(movie);
         }
 
-          public async Task<MovieResponse> GetMovieByName(string name)
+        public async Task<MovieResponse> GetMovieByName(string name)
         {
-            Validator.ValidateGetMovieByNameRequest(name); 
-
-            var movie = await _movieRepository.GetMovieByName(name);
+            Validator.ValidateGetMovieByNameRequest(name);
+            
+            Movie movie = await _movieRepository.GetMovieByName(name);
             if (movie == null)
             {
                 throw new KeyNotFoundException("Filme não encontrado.");
             }
-            
+
             return new MovieResponse
             {
                 Name = movie.Name,
                 Director = movie.Director,
                 Duration = movie.Duration,
-                RoomNumber = movie.RoomId
+                RoomNumber = movie.Room?.RoomNumber,
+                Description = movie.Room?.Description
             };
+        }
+
+        public async Task<MovieResponse> UpdateMovie(UpdateMovieRoomRequest updateMovieRoomRequest)
+        {
+            await Validator.ValidateUpdateMovieRoomRequestAsync(updateMovieRoomRequest, _roomRepository, _movieRepository);
+
+            Movie movie = await _movieRepository.GetMovieByName(updateMovieRoomRequest.Name);
+            Room room = await _roomRepository.GetRoomByNumber(updateMovieRoomRequest.RoomNumber);
+
+            movie.RoomId = room?.RoomId;
+
+            await _movieRepository.UpdateMovie(movie);
+
+            return new MovieResponse
+            {
+                Name = movie.Name,
+                Director = movie.Director,
+                Duration = movie.Duration,
+                RoomNumber = room?.RoomNumber
+            };
+        }
+
+        public async Task<IEnumerable<MovieResponse>> GetAllMovies()
+        {
+            return await _movieRepository.GetAllMovies();
         }
     }
 }
