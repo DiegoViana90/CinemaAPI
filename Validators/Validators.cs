@@ -1,11 +1,38 @@
 using System;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using CinemaApi.DTOs.Request;
+using CinemaApi.Repositories.Interface;
 
 namespace CinemaApi.Validators
 {
-    public class Validator
+    public static class Validator
     {
-        public static bool ValidateInsertMovieRequest(InsertMovieRequest insertMovieRequest)
+        public static async Task ValidateInsertRoomRequestAsync(InsertRoomRequest insertRoomRequest, IRoomRepository roomRepository)
+        {
+            if (insertRoomRequest == null)
+            {
+                throw new ArgumentNullException(nameof(insertRoomRequest), "O request não pode ser nulo.");
+            }
+
+            if (string.IsNullOrEmpty(insertRoomRequest.RoomNumber))
+            {
+                throw new ArgumentException("O número da sala não pode ser vazio.");
+            }
+
+            if (!Regex.IsMatch(insertRoomRequest.RoomNumber, "^[0-9]{3}$"))
+            {
+                throw new ArgumentException("O número da sala deve conter exatamente 3 dígitos.");
+            }
+
+            bool roomExists = await roomRepository.RoomExistsByNumber(insertRoomRequest.RoomNumber);
+            if (roomExists)
+            {
+                throw new ArgumentException("Uma sala com este número já existe.");
+            }
+        }
+
+        public static async Task ValidateInsertMovieRequestAsync(InsertMovieRequest insertMovieRequest, IRoomRepository roomRepository, IMovieRepository movieRepository)
         {
             if (insertMovieRequest == null)
             {
@@ -27,12 +54,28 @@ namespace CinemaApi.Validators
                 throw new ArgumentException("A duração do filme deve ser maior que zero.");
             }
 
-            if (insertMovieRequest.RoomNumber <= 0)
+            if (insertMovieRequest.RoomNumber.HasValue && insertMovieRequest.RoomNumber <= 0)
             {
                 throw new ArgumentException("O número da sala deve ser maior que zero.");
             }
 
-            return true;
+            bool roomExists = true;
+            if (insertMovieRequest.RoomNumber.HasValue)
+            {
+                roomExists = await roomRepository.RoomExists(insertMovieRequest.RoomNumber.Value);
+            }
+
+            if (insertMovieRequest.RoomNumber.HasValue && !roomExists)
+            {
+                throw new ArgumentException("A sala especificada não existe.");
+            }
+
+            bool movieExists = await movieRepository.MovieExists(insertMovieRequest.Name);
+
+            if (movieExists)
+            {
+                throw new ArgumentException("Um filme com este nome já existe.");
+            }
         }
     }
 }
