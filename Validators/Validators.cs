@@ -8,6 +8,16 @@ namespace CinemaApi.Validators
 {
     public static class Validator
     {
+
+        public static void ValidateGetMovieByNameRequest(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException("O nome do filme não pode ser vazio.");
+            }
+
+        }
+
         public static async Task ValidateInsertRoomRequestAsync(InsertRoomRequest insertRoomRequest, IRoomRepository roomRepository)
         {
             if (insertRoomRequest == null)

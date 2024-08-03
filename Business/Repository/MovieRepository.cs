@@ -23,8 +23,14 @@ namespace CinemaApi.Repositories
 
         public async Task<bool> MovieExists(string name)
         {
-             var exists = await _context.Movies.AnyAsync(m => m.Name == name);
-             return exists;
+            var exists = await _context.Movies.AnyAsync(m => m.Name == name);
+            return exists;
+        }
+
+        public async Task<Movie> GetMovieByName(string name)
+        {
+            var movie = await _context.Movies.FirstOrDefaultAsync(m => m.Name == name);
+            return movie;
         }
     }
 }
