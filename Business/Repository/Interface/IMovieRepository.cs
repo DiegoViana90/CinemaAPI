@@ -7,5 +7,6 @@ namespace CinemaApi.Repositories.Interface
     {
         Task InsertNewMovie(Movie movie);
         Task<bool> MovieExists(string name);
+        Task<Movie> GetMovieByName(string name);
     }
 }

@@ -19,7 +19,8 @@ namespace CinemaApi.Controllers
         }
 
         [HttpPost("InsertNewRoom")]
-        [SwaggerOperation(Summary = "Adiciona uma nova sala", Description = "Adiciona uma nova sala ao sistema")]
+        [SwaggerOperation(Summary = "Adiciona uma nova sala",
+         Description = "Adiciona uma nova sala ao sistema")]
         [SwaggerResponse(200, "Sala criada com sucesso", typeof(string))]
         [SwaggerResponse(400, "Solicitação inválida")]
         [SwaggerResponse(500, "Erro interno do servidor")]

@@ -1,5 +1,6 @@
 using CinemaApi.Business.Interface;
 using CinemaApi.DTOs.Request;
+using CinemaApi.DTOs.Response;
 using CinemaApi.Validators;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -19,7 +20,8 @@ namespace CinemaApi.Controllers
         }
 
         [HttpPost("InsertNewMovie")]
-        [SwaggerOperation(Summary = "Adiciona um novo filme", Description = "Adiciona um novo filme ao sistema")]
+        [SwaggerOperation(Summary = "Adiciona um novo filme",
+        Description = "Adiciona um novo filme ao sistema")]
         [SwaggerResponse(200, "Filme Criado com sucesso", typeof(string))]
         [SwaggerResponse(201, "Filme Criado com sucesso", typeof(string))]
         [SwaggerResponse(400, "Solicitação inválida")]
@@ -33,6 +35,29 @@ namespace CinemaApi.Controllers
                 return Ok("Filme Inserido com sucesso.");
             }
 
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetMovieByName")]
+        [SwaggerOperation(Summary = "Obtém um filme pelo nome",
+         Description = "Obtém os detalhes de um filme pelo nome")]
+        [SwaggerResponse(200, "Filme encontrado", typeof(MovieResponse))]
+        [SwaggerResponse(404, "Filme não encontrado")]
+        [SwaggerResponse(500, "Erro interno do servidor")]
+        public async Task<ActionResult<MovieResponse>> GetMovieByName(string name)
+        {
+            try
+            {
+                var movieResponse = await _movieService.GetMovieByName(name);
+                return Ok(movieResponse);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);

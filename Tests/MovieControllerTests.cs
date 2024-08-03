@@ -1,9 +1,11 @@
 using CinemaApi.Business.Interface;
 using CinemaApi.Controllers;
 using CinemaApi.DTOs.Request;
+using CinemaApi.DTOs.Response;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -98,6 +100,56 @@ namespace CinemaApi.Tests
 
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
             Assert.Equal("A duração do filme deve ser maior que zero.", badRequestResult.Value);
+        }
+
+        [Fact]
+        public async Task GetMovieByName_ReturnsOk_WhenMovieIsFound()
+        {
+            var movieName = "Inception";
+            var movieResponse = new MovieResponse
+            {
+                Name = movieName,
+                Director = "Christopher Nolan",
+                Duration = new TimeSpan(2, 28, 0),
+                RoomNumber = 1
+            };
+
+            _mockMovieService.Setup(service => service.GetMovieByName(movieName))
+                             .ReturnsAsync(movieResponse);
+
+            var result = await _controller.GetMovieByName(movieName);
+
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var returnValue = Assert.IsType<MovieResponse>(okResult.Value);
+            Assert.Equal(movieName, returnValue.Name);
+        }
+
+        [Fact]
+        public async Task GetMovieByName_ReturnsNotFound_WhenMovieIsNotFound()
+        {
+            var movieName = "Nonexistent Movie";
+
+            _mockMovieService.Setup(service => service.GetMovieByName(movieName))
+                             .ThrowsAsync(new KeyNotFoundException("Filme não encontrado."));
+
+            var result = await _controller.GetMovieByName(movieName);
+
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
+            Assert.Equal("Filme não encontrado.", notFoundResult.Value);
+        }
+
+        [Fact]
+        public async Task GetMovieByName_ReturnsBadRequest_WhenNameIsEmpty()
+        {
+            var movieName = "";
+
+            _mockMovieService.Setup(service => service.GetMovieByName(movieName))
+                             .ThrowsAsync(new ArgumentException("O nome do filme não pode ser vazio."));
+
+            var result = await _controller.GetMovieByName(movieName);
+
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal("O nome do filme não pode ser vazio.", badRequestResult.Value);
         }
     }
 }
