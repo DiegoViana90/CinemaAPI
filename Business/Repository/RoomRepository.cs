@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using CinemaApi.Business.Services;
 using CinemaApi.Data;
 using CinemaApi.Repositories.Interface;
 using CinemaAPI.Models;
@@ -31,6 +33,24 @@ namespace CinemaApi.Repositories
         {
             Room room = await _context.Rooms.FirstOrDefaultAsync(r => r.RoomNumber == roomNumber);
             return room;
+        }
+
+        public async Task<IEnumerable<Room>> GetAllRooms()
+        {
+            IEnumerable<Room> rooms = await _context.Rooms.ToListAsync();
+            return rooms;
+        }
+
+        public async Task UpdateRoom(Room room)
+        {
+            _context.Rooms.Update(room);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteRoom(Room room)
+        {
+            _context.Rooms.Remove(room);
+            await _context.SaveChangesAsync();
         }
     }
 }

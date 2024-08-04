@@ -3,9 +3,6 @@ using CinemaApi.DTOs.Request;
 using CinemaApi.DTOs.Response;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace CinemaApi.Controllers
 {
