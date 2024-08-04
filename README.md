@@ -20,6 +20,7 @@ Plus
 - docker
 - docker-compose 
 - paginação dinâmica das consultas
+
 Dica importante:
 - Obedecer http code
 
