@@ -1,6 +1,4 @@
-using System;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using CinemaApi.DTOs.Request;
 using CinemaApi.Repositories.Interface;
 

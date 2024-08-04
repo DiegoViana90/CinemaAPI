@@ -4,9 +4,6 @@ using CinemaApi.DTOs.Request;
 using CinemaApi.DTOs.Response;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace CinemaApi.Tests
