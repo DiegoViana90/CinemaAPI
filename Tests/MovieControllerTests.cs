@@ -30,7 +30,7 @@ namespace CinemaApi.Tests
                 Name = "Inception",
                 Director = "Christopher Nolan",
                 Duration = new TimeSpan(2, 28, 0),
-                RoomNumber = 1
+                RoomNumber = "101"
             };
 
             _mockMovieService.Setup(service => service.InsertNewMovie(It.IsAny<InsertMovieRequest>()))
@@ -38,8 +38,8 @@ namespace CinemaApi.Tests
 
             var result = await _controller.InsertMovie(insertMovieRequest);
 
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Equal("Filme Inserido com sucesso.", okResult.Value);
+            var okResult = Assert.IsType<ActionResult<string>>(result);
+            Assert.Equal("Filme Inserido com sucesso.", (okResult.Result as OkObjectResult).Value);
         }
 
         [Fact]
@@ -50,16 +50,16 @@ namespace CinemaApi.Tests
                 Name = "Inception",
                 Director = "Christopher Nolan",
                 Duration = new TimeSpan(2, 28, 0),
-                RoomNumber = 1
+                RoomNumber = "101"
             };
 
             _mockMovieService.Setup(service => service.InsertNewMovie(It.IsAny<InsertMovieRequest>()))
-                             .ThrowsAsync(new ArgumentException("Um filme com este nome já existe."));
+                             .ThrowsAsync(new ArgumentException("Um filme com este nome já existe na sala especificada."));
 
             var result = await _controller.InsertMovie(insertMovieRequest);
 
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-            Assert.Equal("Um filme com este nome já existe.", badRequestResult.Value);
+            var badRequestResult = Assert.IsType<ActionResult<string>>(result);
+            Assert.Equal("Um filme com este nome já existe na sala especificada.", (badRequestResult.Result as BadRequestObjectResult).Value);
         }
 
         [Fact]
@@ -67,9 +67,9 @@ namespace CinemaApi.Tests
         {
             var insertMovieRequest = new InsertMovieRequest
             {
-                Name = "Onze Homens e um Segredo",
+                Name = "Onze Homens e um segredo",
                 Director = "Steven Soderbergh",
-                Duration = new TimeSpan(1, 16, 0),
+                Duration = new TimeSpan(1, 56, 0),
                 RoomNumber = null
             };
 
@@ -78,8 +78,8 @@ namespace CinemaApi.Tests
 
             var result = await _controller.InsertMovie(insertMovieRequest);
 
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Equal("Filme Inserido com sucesso.", okResult.Value);
+            var okResult = Assert.IsType<ActionResult<string>>(result);
+            Assert.Equal("Filme Inserido com sucesso.", (okResult.Result as OkObjectResult).Value);
         }
 
         [Fact]
@@ -87,10 +87,10 @@ namespace CinemaApi.Tests
         {
             var insertMovieRequest = new InsertMovieRequest
             {
-                Name = "Onze Homens e um Segredo",
+                Name = "Onze Homens e um segredo",
                 Director = "Steven Soderbergh",
                 Duration = TimeSpan.Zero,
-                RoomNumber = 1
+                RoomNumber = "101"
             };
 
             _mockMovieService.Setup(service => service.InsertNewMovie(It.IsAny<InsertMovieRequest>()))
@@ -98,8 +98,8 @@ namespace CinemaApi.Tests
 
             var result = await _controller.InsertMovie(insertMovieRequest);
 
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-            Assert.Equal("A duração do filme deve ser maior que zero.", badRequestResult.Value);
+            var badRequestResult = Assert.IsType<ActionResult<string>>(result);
+            Assert.Equal("A duração do filme deve ser maior que zero.", (badRequestResult.Result as BadRequestObjectResult).Value);
         }
 
         [Fact]
@@ -111,7 +111,8 @@ namespace CinemaApi.Tests
                 Name = movieName,
                 Director = "Christopher Nolan",
                 Duration = new TimeSpan(2, 28, 0),
-                RoomNumber = 1
+                RoomNumbers = new List<string> { "101" },
+                Descriptions = new List<string> { "Main Theater" }
             };
 
             _mockMovieService.Setup(service => service.GetMovieByName(movieName))
@@ -119,8 +120,8 @@ namespace CinemaApi.Tests
 
             var result = await _controller.GetMovieByName(movieName);
 
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            var returnValue = Assert.IsType<MovieResponse>(okResult.Value);
+            var okResult = Assert.IsType<ActionResult<MovieResponse>>(result);
+            var returnValue = Assert.IsType<MovieResponse>((okResult.Result as OkObjectResult).Value);
             Assert.Equal(movieName, returnValue.Name);
         }
 
@@ -134,8 +135,8 @@ namespace CinemaApi.Tests
 
             var result = await _controller.GetMovieByName(movieName);
 
-            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
-            Assert.Equal("Filme não encontrado.", notFoundResult.Value);
+            var notFoundResult = Assert.IsType<ActionResult<MovieResponse>>(result);
+            Assert.Equal("Filme não encontrado.", (notFoundResult.Result as NotFoundObjectResult).Value);
         }
 
         [Fact]
@@ -148,8 +149,108 @@ namespace CinemaApi.Tests
 
             var result = await _controller.GetMovieByName(movieName);
 
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-            Assert.Equal("O nome do filme não pode ser vazio.", badRequestResult.Value);
+            var badRequestResult = Assert.IsType<ActionResult<MovieResponse>>(result);
+            Assert.Equal("O nome do filme não pode ser vazio.", (badRequestResult.Result as BadRequestObjectResult).Value);
+        }
+
+        [Fact]
+        public async Task GetAllMovies_ReturnsOk_WithListOfMovies()
+        {
+            var movies = new List<MovieResponse>
+            {
+                new MovieResponse
+                {
+                    Name = "Inception",
+                    Director = "Christopher Nolan",
+                    Duration = new TimeSpan(2, 28, 0),
+                    RoomNumbers = new List<string> { "101" },
+                    Descriptions = new List<string> { "Main Theater" }
+                },
+                new MovieResponse
+                {
+                    Name = "The Matrix",
+                    Director = "Wachowskis",
+                    Duration = new TimeSpan(2, 16, 0),
+                    RoomNumbers = new List<string> { "102" },
+                    Descriptions = new List<string> { "Secondary Theater" }
+                }
+            };
+
+            _mockMovieService.Setup(service => service.GetAllMovies())
+                             .ReturnsAsync(movies);
+
+            var result = await _controller.GetAllMovies();
+
+            var okResult = Assert.IsType<ActionResult<IEnumerable<MovieResponse>>>(result);
+            var returnValue = Assert.IsType<List<MovieResponse>>((okResult.Result as OkObjectResult).Value);
+            Assert.Equal(2, returnValue.Count);
+            Assert.Equal("Inception", returnValue[0].Name);
+            Assert.Equal("The Matrix", returnValue[1].Name);
+        }
+
+        [Fact]
+        public async Task UpdateMovie_ReturnsOk_WhenMovieRoomIsUpdatedSuccessfully()
+        {
+            var updateMovieRoomRequest = new UpdateMovieRoomRequest
+            {
+                Name = "Inception",
+                RoomNumber = "102"
+            };
+
+            var movieResponse = new MovieResponse
+            {
+                Name = "Inception",
+                Director = "Christopher Nolan",
+                Duration = new TimeSpan(2, 28, 0),
+                RoomNumbers = new List<string> { "102" },
+                Descriptions = new List<string>()
+            };
+
+            _mockMovieService.Setup(service => service.UpdateMovie(updateMovieRoomRequest))
+                             .ReturnsAsync(movieResponse);
+
+            var result = await _controller.UpdateMovie(updateMovieRoomRequest);
+
+            var okResult = Assert.IsType<ActionResult<MovieResponse>>(result);
+            var returnValue = Assert.IsType<MovieResponse>((okResult.Result as OkObjectResult).Value);
+            Assert.Equal("Inception", returnValue.Name);
+            Assert.Contains("102", returnValue.RoomNumbers);
+        }
+
+        [Fact]
+        public async Task UpdateMovie_ReturnsNotFound_WhenMovieIsNotFound()
+        {
+            var updateMovieRoomRequest = new UpdateMovieRoomRequest
+            {
+                Name = "Nonexistent Movie",
+                RoomNumber = "102"
+            };
+
+            _mockMovieService.Setup(service => service.UpdateMovie(updateMovieRoomRequest))
+                             .ThrowsAsync(new KeyNotFoundException("Filme não encontrado."));
+
+            var result = await _controller.UpdateMovie(updateMovieRoomRequest);
+
+            var notFoundResult = Assert.IsType<ActionResult<MovieResponse>>(result);
+            Assert.Equal("Filme não encontrado.", (notFoundResult.Result as NotFoundObjectResult).Value);
+        }
+
+        [Fact]
+        public async Task UpdateMovie_ReturnsBadRequest_WhenMovieAlreadyExistsInRoom()
+        {
+            var updateMovieRoomRequest = new UpdateMovieRoomRequest
+            {
+                Name = "Inception",
+                RoomNumber = "101"
+            };
+
+            _mockMovieService.Setup(service => service.UpdateMovie(updateMovieRoomRequest))
+                             .ThrowsAsync(new ArgumentException("Um filme com este nome já existe na sala especificada."));
+
+            var result = await _controller.UpdateMovie(updateMovieRoomRequest);
+
+            var badRequestResult = Assert.IsType<ActionResult<MovieResponse>>(result);
+            Assert.Equal("Um filme com este nome já existe na sala especificada.", (badRequestResult.Result as BadRequestObjectResult).Value);
         }
     }
 }

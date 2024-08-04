@@ -109,5 +109,6 @@ namespace CinemaApi.Tests
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
             Assert.Equal("O número da sala deve conter exatamente 3 dígitos.", badRequestResult.Value);
         }
+        
     }
 }

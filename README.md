@@ -1,4 +1,4 @@
-# CinemaApi
+# CinemaApi  :construction:
 
 Este é um projeto de API RESTful para gerenciar filmes em salas de cinema, desenvolvido em .NET 7.0 com uma arquitetura em camadas simples MVC. A API permite gerenciar salas (Room) e filmes (Movie) que passam em uma determinada sala.
 
@@ -74,3 +74,5 @@ dotnet restore
 ```bash
 dotnet ef database update
 ```
+
+:construction:

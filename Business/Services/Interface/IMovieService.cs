@@ -9,5 +9,8 @@ namespace CinemaApi.Business.Interface
     {
         Task InsertNewMovie(InsertMovieRequest insertMovieRequest);
         Task<MovieResponse> GetMovieByName(string name);
+        Task<MovieResponse> UpdateMovie(UpdateMovieRoomRequest updateMovieRoomRequest);
+        Task<IEnumerable<MovieResponse>> GetAllMovies();
+        Task RemoveMovieFromRoom(string movieName, string roomNumber);
     }
 }
