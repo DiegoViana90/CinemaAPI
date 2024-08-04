@@ -87,7 +87,7 @@ namespace CinemaApi.Controllers
         }
 
         [HttpGet("GetAllMovies")]
-        [SwaggerOperation(Summary = "Obtém todos os filmes", 
+        [SwaggerOperation(Summary = "Obtém todos os filmes",
         Description = "Obtém a lista de todos os filmes")]
         [SwaggerResponse(200, "Lista de filmes obtida com sucesso", typeof(IEnumerable<MovieResponse>))]
         [SwaggerResponse(500, "Erro interno do servidor")]
@@ -128,5 +128,12 @@ namespace CinemaApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("test")]
+        public IActionResult Test()
+        {
+            return Ok("Test route working!");
+        }
+
     }
 }

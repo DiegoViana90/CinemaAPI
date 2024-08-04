@@ -9,8 +9,8 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Adicione serviços ao contêiner.
 builder.Services.AddControllers();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -36,16 +36,19 @@ builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 
 var app = builder.Build();
 
+// Configure o pipeline de requisição HTTP.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CinemaApi v1"));
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection(); // Certifique-se de que isso está comentado temporariamente
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/test", () => "Test route working!"); // Adicionando uma rota de teste
 
 app.Run();
