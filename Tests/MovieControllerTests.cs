@@ -252,5 +252,50 @@ namespace CinemaApi.Tests
             var badRequestResult = Assert.IsType<ActionResult<MovieResponse>>(result);
             Assert.Equal("Um filme com este nome já existe na sala especificada.", (badRequestResult.Result as BadRequestObjectResult).Value);
         }
+
+        [Fact]
+        public async Task RemoveMovieFromRoom_ReturnsOk_WhenMovieIsRemovedSuccessfully()
+        {
+            var movieName = "Inception";
+            var roomNumber = "101";
+
+            _mockMovieService.Setup(service => service.RemoveMovieFromRoom(movieName, roomNumber))
+                             .Returns(Task.CompletedTask);
+
+            var result = await _controller.RemoveMovieFromRoom(movieName, roomNumber);
+
+            var okResult = Assert.IsType<ActionResult<string>>(result);
+            Assert.Equal("Filme removido da sala com sucesso.", (okResult.Result as OkObjectResult).Value);
+        }
+
+        [Fact]
+        public async Task RemoveMovieFromRoom_ReturnsNotFound_WhenMovieOrRoomNotFound()
+        {
+            var movieName = "Nonexistent Movie";
+            var roomNumber = "101";
+
+            _mockMovieService.Setup(service => service.RemoveMovieFromRoom(movieName, roomNumber))
+                             .ThrowsAsync(new KeyNotFoundException("O filme ou a sala não foram encontrados."));
+
+            var result = await _controller.RemoveMovieFromRoom(movieName, roomNumber);
+
+            var notFoundResult = Assert.IsType<ActionResult<string>>(result);
+            Assert.Equal("O filme ou a sala não foram encontrados.", (notFoundResult.Result as NotFoundObjectResult).Value);
+        }
+
+        [Fact]
+        public async Task RemoveMovieFromRoom_ReturnsBadRequest_WhenExceptionIsThrown()
+        {
+            var movieName = "Inception";
+            var roomNumber = "101";
+
+            _mockMovieService.Setup(service => service.RemoveMovieFromRoom(movieName, roomNumber))
+                             .ThrowsAsync(new ArgumentException("Erro ao remover o filme da sala."));
+
+            var result = await _controller.RemoveMovieFromRoom(movieName, roomNumber);
+
+            var badRequestResult = Assert.IsType<ActionResult<string>>(result);
+            Assert.Equal("Erro ao remover o filme da sala.", (badRequestResult.Result as BadRequestObjectResult).Value);
+        }
     }
 }

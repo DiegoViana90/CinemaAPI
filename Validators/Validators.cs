@@ -68,7 +68,6 @@ namespace CinemaApi.Validators
                 throw new ArgumentException("O número da sala deve conter exatamente 3 dígitos.");
             }
 
-            // Verifica se o filme já existe na tabela Movie
             bool movieExists = await movieRepository.MovieExists(insertMovieRequest.Name);
             if (movieExists)
             {
@@ -83,7 +82,6 @@ namespace CinemaApi.Validators
                     throw new KeyNotFoundException("Sala não encontrada.");
                 }
 
-                // Verifica se o filme já está vinculado a alguma sala
                 bool movieExistsInRoom = await movieRepository.MovieExists(insertMovieRequest.Name, insertMovieRequest.RoomNumber);
                 if (movieExistsInRoom)
                 {
