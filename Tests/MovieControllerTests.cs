@@ -111,8 +111,8 @@ namespace CinemaApi.Tests
                 Name = movieName,
                 Director = "Christopher Nolan",
                 Duration = new TimeSpan(2, 28, 0),
-                RoomNumber = "101",
-                Description = "Main Theater"
+                RoomNumbers = new List<string> { "101" },
+                Descriptions = new List<string> { "Main Theater" }
             };
 
             _mockMovieService.Setup(service => service.GetMovieByName(movieName))
@@ -163,16 +163,16 @@ namespace CinemaApi.Tests
                     Name = "Inception",
                     Director = "Christopher Nolan",
                     Duration = new TimeSpan(2, 28, 0),
-                    RoomNumber = "101",
-                    Description = "Main Theater"
+                    RoomNumbers = new List<string> { "101" },
+                    Descriptions = new List<string> { "Main Theater" }
                 },
                 new MovieResponse
                 {
                     Name = "The Matrix",
                     Director = "Wachowskis",
                     Duration = new TimeSpan(2, 16, 0),
-                    RoomNumber = "102",
-                    Description = "Secondary Theater"
+                    RoomNumbers = new List<string> { "102" },
+                    Descriptions = new List<string> { "Secondary Theater" }
                 }
             };
 
@@ -202,7 +202,8 @@ namespace CinemaApi.Tests
                 Name = "Inception",
                 Director = "Christopher Nolan",
                 Duration = new TimeSpan(2, 28, 0),
-                RoomNumber = "102"
+                RoomNumbers = new List<string> { "102" },
+                Descriptions = new List<string>()
             };
 
             _mockMovieService.Setup(service => service.UpdateMovie(updateMovieRoomRequest))
@@ -213,7 +214,7 @@ namespace CinemaApi.Tests
             var okResult = Assert.IsType<ActionResult<MovieResponse>>(result);
             var returnValue = Assert.IsType<MovieResponse>((okResult.Result as OkObjectResult).Value);
             Assert.Equal("Inception", returnValue.Name);
-            Assert.Equal("102", returnValue.RoomNumber);
+            Assert.Contains("102", returnValue.RoomNumbers);
         }
 
         [Fact]

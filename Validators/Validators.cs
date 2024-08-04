@@ -68,6 +68,13 @@ namespace CinemaApi.Validators
                 throw new ArgumentException("O número da sala deve conter exatamente 3 dígitos.");
             }
 
+            // Verifica se o filme já existe na tabela Movie
+            bool movieExists = await movieRepository.MovieExists(insertMovieRequest.Name);
+            if (movieExists)
+            {
+                throw new ArgumentException("Um filme com este nome já existe.");
+            }
+
             if (!string.IsNullOrEmpty(insertMovieRequest.RoomNumber))
             {
                 var room = await roomRepository.GetRoomByNumber(insertMovieRequest.RoomNumber);
@@ -76,10 +83,11 @@ namespace CinemaApi.Validators
                     throw new KeyNotFoundException("Sala não encontrada.");
                 }
 
-                bool movieExists = await movieRepository.MovieExists(insertMovieRequest.Name, insertMovieRequest.RoomNumber);
-                if (movieExists)
+                // Verifica se o filme já está vinculado a alguma sala
+                bool movieExistsInRoom = await movieRepository.MovieExists(insertMovieRequest.Name, insertMovieRequest.RoomNumber);
+                if (movieExistsInRoom)
                 {
-                    throw new ArgumentException("Um filme com este nome já existe na sala especificada.");
+                    throw new ArgumentException("Um filme com este nome já está vinculado à sala especificada.");
                 }
             }
         }
@@ -117,10 +125,36 @@ namespace CinemaApi.Validators
                 }
             }
 
-            bool movieExistsOverall = await movieRepository.MovieExists(updateMovieRoomRequest.Name, updateMovieRoomRequest.RoomNumber);
+            bool movieExistsOverall = await movieRepository.MovieExists(updateMovieRoomRequest.Name);
             if (!movieExistsOverall)
             {
                 throw new KeyNotFoundException("Filme não encontrado.");
+            }
+        }
+
+        public static async Task ValidateRemoveMovieFromRoomRequest(string movieName, string roomNumber,
+            IRoomRepository roomRepository, IMovieRepository movieRepository)
+        {
+            if (string.IsNullOrEmpty(movieName))
+            {
+                throw new ArgumentException("O nome do filme não pode ser vazio.");
+            }
+
+            if (string.IsNullOrEmpty(roomNumber) || !Regex.IsMatch(roomNumber, "^[0-9]{3}$"))
+            {
+                throw new ArgumentException("O número da sala deve conter exatamente 3 dígitos.");
+            }
+
+            var room = await roomRepository.GetRoomByNumber(roomNumber);
+            if (room == null)
+            {
+                throw new KeyNotFoundException("Sala não encontrada.");
+            }
+
+            bool movieExists = await movieRepository.MovieExists(movieName, roomNumber);
+            if (!movieExists)
+            {
+                throw new KeyNotFoundException("O filme não está vinculado à sala especificada.");
             }
         }
     }

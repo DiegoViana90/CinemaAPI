@@ -1,5 +1,5 @@
-using CinemaAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using CinemaAPI.Models;
 
 namespace CinemaApi.Data
 {
@@ -9,6 +9,7 @@ namespace CinemaApi.Data
 
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Movie> Movies { get; set; }
+        public DbSet<MovieRoom> MovieRooms { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -19,17 +20,25 @@ namespace CinemaApi.Data
                 .HasIndex(r => r.RoomNumber)
                 .IsUnique();
 
-            modelBuilder.Entity<Room>()
-                .HasMany(r => r.Movies)
-                .WithOne(m => m.Room)
-                .HasForeignKey(m => m.RoomId);
-
             modelBuilder.Entity<Movie>()
                 .HasKey(m => m.MovieId);
 
             modelBuilder.Entity<Movie>()
                 .Property(m => m.MovieId)
                 .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<MovieRoom>()
+                .HasKey(mr => new { mr.MovieId, mr.RoomId });
+
+            modelBuilder.Entity<MovieRoom>()
+                .HasOne(mr => mr.Movie)
+                .WithMany(m => m.MovieRooms)
+                .HasForeignKey(mr => mr.MovieId);
+
+            modelBuilder.Entity<MovieRoom>()
+                .HasOne(mr => mr.Room)
+                .WithMany(r => r.MovieRooms)
+                .HasForeignKey(mr => mr.RoomId);
         }
     }
 }

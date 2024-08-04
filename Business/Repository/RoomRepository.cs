@@ -1,8 +1,8 @@
+using System.Threading.Tasks;
 using CinemaApi.Data;
 using CinemaApi.Repositories.Interface;
 using CinemaAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace CinemaApi.Repositories
 {
@@ -29,9 +29,7 @@ namespace CinemaApi.Repositories
 
         public async Task<Room> GetRoomByNumber(string roomNumber)
         {
-            Room room = await _context.Rooms
-                       .Include(r => r.Movies)
-                       .FirstOrDefaultAsync(r => r.RoomNumber == roomNumber);
+            Room room = await _context.Rooms.FirstOrDefaultAsync(r => r.RoomNumber == roomNumber);
             return room;
         }
     }

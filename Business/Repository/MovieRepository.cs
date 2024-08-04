@@ -1,9 +1,11 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using CinemaApi.Data;
 using CinemaApi.DTOs.Response;
 using CinemaApi.Repositories.Interface;
 using CinemaAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace CinemaApi.Repositories
 {
@@ -22,19 +24,29 @@ namespace CinemaApi.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<bool> MovieExists(string name)
+        {
+            bool movieExists = await _context.Movies.AnyAsync(m => m.Name == name);
+            return movieExists;
+        }
+
         public async Task<bool> MovieExists(string name, string roomNumber)
         {
-            bool movieExists = await _context.Movies
-                                 .Include(m => m.Room)
-                                 .AnyAsync(m => m.Name == name && m.Room.RoomNumber == roomNumber);
+            bool movieExists = await _context.MovieRooms
+                .Include(mr => mr.Movie)
+                .Include(mr => mr.Room)
+                .AnyAsync(mr => mr.Movie.Name == name && mr.Room.RoomNumber == roomNumber);
+
             return movieExists;
         }
 
         public async Task<Movie> GetMovieByName(string name)
         {
             Movie movie = await _context.Movies
-                                 .Include(m => m.Room)
-                                 .FirstOrDefaultAsync(m => m.Name == name);
+                .Include(m => m.MovieRooms)
+                .ThenInclude(mr => mr.Room)
+                .FirstOrDefaultAsync(m => m.Name == name);
+
             return movie;
         }
 
@@ -47,23 +59,32 @@ namespace CinemaApi.Repositories
         public async Task<IEnumerable<MovieResponse>> GetAllMovies()
         {
             IEnumerable<MovieResponse> movies = await _context.Movies
-                                 .Include(m => m.Room)
-                                 .Select(m => new MovieResponse
-                                 {
-                                     Name = m.Name,
-                                     Director = m.Director,
-                                     Duration = m.Duration,
-                                     RoomNumber = m.Room.RoomNumber,
-                                     Description = m.Room.Description
-                                 })
-                                 .ToListAsync();
+                .Include(m => m.MovieRooms)
+                .ThenInclude(mr => mr.Room)
+                .Select(m => new MovieResponse
+                {
+                    Name = m.Name,
+                    Director = m.Director,
+                    Duration = m.Duration,
+                    RoomNumbers = m.MovieRooms.Select(mr => mr.Room.RoomNumber).ToList(),
+                    Descriptions = m.MovieRooms.Select(mr => mr.Room.Description).ToList()
+                })
+                .ToListAsync();
+
             return movies;
         }
-
-        public async Task<bool> MovieExistsInRoom(string name, int roomId)
+        public async Task RemoveMovieFromRoom(string movieName, string roomNumber)
         {
-            bool movieExistsInRoom = await _context.Movies.AnyAsync(m => m.Name == name && m.RoomId == roomId);
-            return movieExistsInRoom;
+            var movieRoom = await _context.MovieRooms
+                .Include(mr => mr.Movie)
+                .Include(mr => mr.Room)
+                .FirstOrDefaultAsync(mr => mr.Movie.Name == movieName && mr.Room.RoomNumber == roomNumber);
+
+            if (movieRoom != null)
+            {
+                _context.MovieRooms.Remove(movieRoom);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }
