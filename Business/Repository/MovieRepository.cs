@@ -20,8 +20,20 @@ namespace CinemaApi.Repositories
 
         public async Task InsertNewMovie(Movie movie)
         {
-            _context.Movies.Add(movie);
-            await _context.SaveChangesAsync();
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    _context.Movies.Add(movie);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                }
+                catch (Exception)
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+            }
         }
 
         public async Task<bool> MovieExists(string name)
@@ -52,8 +64,24 @@ namespace CinemaApi.Repositories
 
         public async Task UpdateMovie(Movie movie)
         {
-            _context.Movies.Update(movie);
-            await _context.SaveChangesAsync();
+            var strategy = _context.Database.CreateExecutionStrategy();
+            await strategy.ExecuteAsync(async () =>
+            {
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        _context.Movies.Update(movie);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                    }
+                    catch (Exception)
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
+                }
+            });
         }
 
         public async Task<IEnumerable<MovieResponse>> GetAllMovies()
@@ -73,6 +101,7 @@ namespace CinemaApi.Repositories
 
             return movies;
         }
+
         public async Task RemoveMovieFromRoom(string movieName, string roomNumber)
         {
             var movieRoom = await _context.MovieRooms
@@ -85,6 +114,35 @@ namespace CinemaApi.Repositories
                 _context.MovieRooms.Remove(movieRoom);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task UnscheduleMovie(string movieName)
+        {
+            var strategy = _context.Database.CreateExecutionStrategy();
+            await strategy.ExecuteAsync(async () =>
+            {
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        var movie = await _context.Movies.FirstOrDefaultAsync(m => m.Name == movieName);
+
+                        if (movie != null)
+                        {
+                            var movieRooms = _context.MovieRooms.Where(mr => mr.MovieId == movie.MovieId);
+                            _context.MovieRooms.RemoveRange(movieRooms);
+                            await _context.SaveChangesAsync();
+                        }
+
+                        await transaction.CommitAsync();
+                    }
+                    catch (Exception)
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
+                }
+            });
         }
     }
 }
