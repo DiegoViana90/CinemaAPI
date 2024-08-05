@@ -294,5 +294,47 @@ namespace CinemaApi.Tests
             var badRequestResult = Assert.IsType<ActionResult<string>>(result);
             Assert.Equal("Erro ao remover o filme da sala.", (badRequestResult.Result as BadRequestObjectResult).Value);
         }
+
+        [Fact]
+        public async Task UnscheduleMovie_ReturnsOk_WhenMovieIsUnscheduledSuccessfully()
+        {
+            var movieName = "Inception";
+
+            _mockMovieService.Setup(service => service.UnscheduleMovie(movieName))
+                             .Returns(Task.CompletedTask);
+
+            var result = await _controller.UnscheduleMovie(movieName);
+
+            var okResult = Assert.IsType<ActionResult<string>>(result);
+            Assert.Equal("Filme removido da programação com sucesso.", (okResult.Result as OkObjectResult).Value);
+        }
+
+        [Fact]
+        public async Task UnscheduleMovie_ReturnsNotFound_WhenMovieIsNotFound()
+        {
+            var movieName = "Nonexistent Movie";
+
+            _mockMovieService.Setup(service => service.UnscheduleMovie(movieName))
+                             .ThrowsAsync(new KeyNotFoundException("Filme não encontrado."));
+
+            var result = await _controller.UnscheduleMovie(movieName);
+
+            var notFoundResult = Assert.IsType<ActionResult<string>>(result);
+            Assert.Equal("Filme não encontrado.", (notFoundResult.Result as NotFoundObjectResult).Value);
+        }
+
+        [Fact]
+        public async Task UnscheduleMovie_ReturnsBadRequest_WhenExceptionIsThrown()
+        {
+            var movieName = "Inception";
+
+            _mockMovieService.Setup(service => service.UnscheduleMovie(movieName))
+                             .ThrowsAsync(new ArgumentException("Erro ao remover o filme da programação."));
+
+            var result = await _controller.UnscheduleMovie(movieName);
+
+            var badRequestResult = Assert.IsType<ActionResult<string>>(result);
+            Assert.Equal("Erro ao remover o filme da programação.", (badRequestResult.Result as BadRequestObjectResult).Value);
+        }
     }
 }

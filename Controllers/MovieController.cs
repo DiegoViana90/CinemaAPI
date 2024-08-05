@@ -128,5 +128,29 @@ namespace CinemaApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpDelete("UnscheduleMovie")]
+        [SwaggerOperation(Summary = "Remove um filme de cartaz",
+        Description = "Remove um filme da programação de todas as salas.")]
+        [SwaggerResponse(200, "Filme removido da programação com sucesso", typeof(string))]
+        [SwaggerResponse(404, "Filme não encontrado")]
+        [SwaggerResponse(400, "Solicitação inválida")]
+        [SwaggerResponse(500, "Erro interno do servidor")]
+        public async Task<ActionResult<string>> UnscheduleMovie(string movieName)
+        {
+            try
+            {
+                await _movieService.UnscheduleMovie(movieName);
+                return Ok("Filme removido da programação com sucesso.");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

@@ -99,5 +99,11 @@ namespace CinemaApi.Business.Services
             await Validator.ValidateRemoveMovieFromRoomRequest(movieName, roomNumber, _roomRepository, _movieRepository);
             await _movieRepository.RemoveMovieFromRoom(movieName, roomNumber);
         }
+
+        public async Task UnscheduleMovie(string movieName)
+        {
+            await Validator.ValidateUnscheduleMovieRequest(movieName, _movieRepository);
+            await _movieRepository.UnscheduleMovie(movieName);
+        }
     }
 }
