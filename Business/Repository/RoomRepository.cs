@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CinemaApi.Business.Services;
 using CinemaApi.Data;
 using CinemaApi.Repositories.Interface;
 using CinemaAPI.Models;
@@ -25,32 +24,61 @@ namespace CinemaApi.Repositories
 
         public async Task<bool> RoomExistsByNumber(string roomNumber)
         {
-            bool roomExists = await _context.Rooms.AnyAsync(r => r.RoomNumber == roomNumber);
-            return roomExists;
+            return await _context.Rooms.AnyAsync(r => r.RoomNumber == roomNumber);
         }
 
         public async Task<Room> GetRoomByNumber(string roomNumber)
         {
-            Room room = await _context.Rooms.FirstOrDefaultAsync(r => r.RoomNumber == roomNumber);
-            return room;
+            return await _context.Rooms.FirstOrDefaultAsync(r => r.RoomNumber == roomNumber);
         }
 
         public async Task<IEnumerable<Room>> GetAllRooms()
         {
-            IEnumerable<Room> rooms = await _context.Rooms.ToListAsync();
-            return rooms;
+            return await _context.Rooms.ToListAsync();
         }
 
         public async Task UpdateRoom(Room room)
         {
-            _context.Rooms.Update(room);
-            await _context.SaveChangesAsync();
+            var strategy = _context.Database.CreateExecutionStrategy();
+            await strategy.ExecuteAsync(async () =>
+            {
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        _context.Rooms.Update(room);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                    }
+                    catch (Exception)
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
+                }
+            });
         }
 
         public async Task DeleteRoom(Room room)
         {
-            _context.Rooms.Remove(room);
-            await _context.SaveChangesAsync();
+            var strategy = _context.Database.CreateExecutionStrategy();
+            await strategy.ExecuteAsync(async () =>
+            {
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        _context.Rooms.Remove(room);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                    }
+                    catch (Exception)
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
+                }
+            });
         }
     }
 }

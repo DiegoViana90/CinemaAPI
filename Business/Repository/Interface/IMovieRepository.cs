@@ -14,5 +14,6 @@ namespace CinemaApi.Repositories.Interface
         Task UpdateMovie(Movie movie);
         Task<IEnumerable<MovieResponse>> GetAllMovies();
         Task RemoveMovieFromRoom(string movieName, string roomNumber);
+        Task UnscheduleMovie(string movieName);
     }
 }

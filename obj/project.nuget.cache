@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "6wqNwBKk3Q6HMzJDikw7MxHWCo5W0NuVgXBIF5mv/2+R6TMAa3wRR/+0uTjCOYo2EjBz/ut+pcMLoBbwsNiySg==",
+  "dgSpecHash": "3Yp/VQcU4uD0AzPWudBqes02OdiyY4+oNlZt7QJ6E7eBepZysVY29FyzGXeY6Ph5FtBPgpFxaEIiLE27GqHeHA==",
   "success": true,
-  "projectFilePath": "C:\\dev\\CinemaApi\\CinemaApi.csproj",
+  "projectFilePath": "c:\\dev\\CinemaApi\\CinemaApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Diego\\.nuget\\packages\\automapper\\7.0.0\\automapper.7.0.0.nupkg.sha512",
     "C:\\Users\\Diego\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",

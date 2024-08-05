@@ -153,5 +153,20 @@ namespace CinemaApi.Validators
                 throw new KeyNotFoundException("O filme não está vinculado à sala especificada.");
             }
         }
+
+        public static async Task ValidateUnscheduleMovieRequest(string movieName,
+            IMovieRepository movieRepository)
+        {
+            if (string.IsNullOrEmpty(movieName))
+            {
+                throw new ArgumentException("O nome do filme não pode ser vazio.");
+            }
+
+            bool movieExists = await movieRepository.MovieExists(movieName);
+            if (!movieExists)
+            {
+                throw new KeyNotFoundException("Filme não encontrado.");
+            }
+        }
     }
 }
