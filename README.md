@@ -1,4 +1,4 @@
-# CinemaApi  :construction:
+# CinemaApi :camera_flash:
 
 Este é um projeto de API RESTful para gerenciar filmes em salas de cinema, desenvolvido em .NET 7.0 com uma arquitetura em camadas simples MVC. A API permite gerenciar salas (Room) e filmes (Movie) que passam em uma determinada sala.
 
@@ -10,24 +10,9 @@ A API deve ser possível gerenciar os filmes que passam em uma determinando sala
 - Uma sala pode ter vários filmes
 - um filme pode existir sem uma sala
 
-
-Criação de testes unitários (Controller e camada de serviço)
-Utilização do banco mysql
-Configuração do swagger
-compartilhar no github
-
-Plus
-- docker
-- docker-compose 
-- paginação dinâmica das consultas
-
-Dica importante:
-- Obedecer http code
-
-
 ## Estrutura do Projeto
 
-- **Models**: Contém as classes das entidades `Room` e `Movie`.
+- **Models**: Contém as classes das entidades `Room`, `Movie` e `MovieRoom`.
 - **DTOs**: Contém os objetos de transferência de dados (Data Transfer Objects).
 - **Repositories**: Contém a lógica de acesso ao banco de dados.
 - **Services**: Contém a lógica de negócios.
@@ -63,7 +48,7 @@ Certifique-se de que o MySQL esteja instalado e em execução.
 Atualize a string de conexão no arquivo appsettings.json com suas credenciais do MySQL:
 ```bash
   "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=CinemaDb;User=root;Password=yourpassword;"
+    "DefaultConnection": "Server=127.0.0.1;Database=CinemaDb;User=root;Password=yourpassword;"
   },
 ```
 
@@ -75,5 +60,29 @@ dotnet restore
 ```bash
 dotnet ef database update
 ```
+### Passo 5: Execução do Projeto
+Você pode escolher entre executar o projeto localmente ou usando Docker:
 
-:construction:
+- Opção A: Executar Localmente
+```bash
+dotnet run
+```
+
+Opção B: Executar com Docker
+- Para construir e executar os contêineres Docker, use:
+```bash
+docker-compose up --build
+```
+Nota: Certifique-se de que o arquivo docker-compose.yml esteja configurado corretamente para incluir a configuração do banco de dados e da aplicação.
+
+###  Passo 6: Acessar a Documentação da API
+A documentação da API pode ser acessada em:
+- Com 'dotnet run' : http://localhost:5005/swagger/index.html
+- Com 'docker-compose up --build': http://localhost:8080/swagger/index.html
+
+### Passo 7: Executar Testes Unitários
+-Os testes unitários para controllers e serviços podem ser encontrados na pasta `Tests`. 
+Para executar os testes, use:
+```bash
+dotnet test
+```
