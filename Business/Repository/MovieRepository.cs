@@ -20,20 +20,24 @@ namespace CinemaApi.Repositories
 
         public async Task InsertNewMovie(Movie movie)
         {
-            using (var transaction = await _context.Database.BeginTransactionAsync())
+            var strategy = _context.Database.CreateExecutionStrategy();
+            await strategy.ExecuteAsync(async () =>
             {
-                try
+                using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
-                    _context.Movies.Add(movie);
-                    await _context.SaveChangesAsync();
-                    await transaction.CommitAsync();
+                    try
+                    {
+                        _context.Movies.Add(movie);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                    }
+                    catch (Exception)
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
                 }
-                catch (Exception)
-                {
-                    await transaction.RollbackAsync();
-                    throw;
-                }
-            }
+            });
         }
 
         public async Task<bool> MovieExists(string name)
