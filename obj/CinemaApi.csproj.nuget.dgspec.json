@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\dev\\CinemaApi\\CinemaApi.csproj": {}
+    "C:\\dev\\CinemaAPI\\CinemaApi.csproj": {}
   },
   "projects": {
-    "c:\\dev\\CinemaApi\\CinemaApi.csproj": {
+    "C:\\dev\\CinemaAPI\\CinemaApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\dev\\CinemaApi\\CinemaApi.csproj",
+        "projectUniqueName": "C:\\dev\\CinemaAPI\\CinemaApi.csproj",
         "projectName": "CinemaApi",
-        "projectPath": "c:\\dev\\CinemaApi\\CinemaApi.csproj",
+        "projectPath": "C:\\dev\\CinemaAPI\\CinemaApi.csproj",
         "packagesPath": "C:\\Users\\Diego\\.nuget\\packages\\",
-        "outputPath": "c:\\dev\\CinemaApi\\obj\\",
+        "outputPath": "C:\\dev\\CinemaAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Diego\\AppData\\Roaming\\NuGet\\NuGet.Config",

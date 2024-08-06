@@ -25,7 +25,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddDbContext<CinemaContext>(options =>
-    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(new Version(8, 0, 25)),
+    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(new Version(8, 0, 39)),
         mysqlOptions => mysqlOptions.EnableRetryOnFailure()
     ));
 
@@ -43,7 +43,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CinemaApi v1"));
 }
 
-// app.UseHttpsRedirection(); // Certifique-se de que isso está comentado temporariamente
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
