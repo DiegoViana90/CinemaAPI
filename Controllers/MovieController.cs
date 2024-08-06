@@ -129,12 +129,6 @@ namespace CinemaApi.Controllers
             }
         }
 
-        [HttpGet("test")]
-        public IActionResult Test()
-        {
-            return Ok("Test route working!");
-        }
-
         [HttpDelete("UnscheduleMovie")]
         [SwaggerOperation(Summary = "Remove um filme de cartaz",
         Description = "Remove um filme da programação de todas as salas.")]
